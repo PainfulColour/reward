@@ -1,0 +1,1333 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Checking your Browser&hellip;</title>
+  <style>
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes stroke {
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes scale {
+
+      0%,
+      100% {
+        transform: none;
+      }
+
+      50% {
+        transform: scale3d(1, 1, 1);
+      }
+    }
+
+    @keyframes fill {
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes fillfail {
+      100% {
+        box-shadow: inset 0 0 0 30px #c44d0e;
+      }
+    }
+
+    @keyframes fillfail-offlabel {
+      100% {
+        box-shadow: inset 0 0 0 30px #1d1f20;
+      }
+    }
+
+    @keyframes fillfail-offlabel-dark {
+      100% {
+        box-shadow: inset 0 0 0 30px #fff;
+      }
+    }
+
+    @keyframes scale-up-center {
+      0% {
+        transform: scale(0.01);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes unspin {
+      40% {
+        stroke-width: 1px;
+        stroke-linecap: square;
+        stroke-dashoffset: 192;
+      }
+
+      100% {
+        stroke-width: 0;
+      }
+    }
+
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      background-color: #fff;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      line-height: 17px;
+      color: #1d1f20;
+      font-family: -apple-system, system-ui, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, "Helvetica Neue", arial, sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+    }
+
+    h1 {
+      margin: 16px 0;
+      text-align: center;
+      line-height: 1.25;
+      color: #1d1f20;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 8px 0;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    #content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid #e0e0e0;
+      background-color: #fafafa;
+      height: 63px;
+      user-select: none;
+    }
+
+    #challenge-stage {
+      display: flex;
+    }
+
+    #branding {
+      display: flex;
+      flex-direction: column;
+      margin: 0 16px 0 0;
+      text-align: right;
+    }
+
+    #spinner-icon {
+      display: flex;
+      margin-right: 8px;
+      width: 30px;
+      height: 30px;
+      animation: rotate 5s linear infinite;
+    }
+
+    #fail-icon {
+      display: flex;
+      margin-right: 8px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 #c44d0e;
+      width: 30px;
+      height: 30px;
+      animation: fillfail 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+      stroke-width: 6px;
+      stroke: #f8f8f8;
+      stroke-miterlimit: 10;
+    }
+
+    #success-icon {
+      display: flex;
+      margin-right: 8px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 #038127;
+      width: 30px;
+      height: 30px;
+      animation: scale-up-center 0.6s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+      stroke-width: 6px;
+      stroke: #f8f8f8;
+      stroke-miterlimit: 10;
+    }
+
+    #success-icon .p1 {
+      stroke-dasharray: 242;
+      stroke-dashoffset: 242;
+      box-shadow: inset 0 0 0 #038127;
+      animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+      animation-delay: 0.5s;
+    }
+
+    .success-circle {
+      stroke-dashoffset: 0;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: #038127;
+      fill: #038127;
+    }
+
+    .theme-dark #success-icon {
+      box-shadow: inset 0 0 0 #0aa937;
+    }
+
+    .theme-dark #success-icon .p1 {
+      box-shadow: inset 0 0 0 #0aa937;
+    }
+
+    .theme-dark .success-circle {
+      stroke: #0aa937;
+      fill: #0aa937;
+    }
+
+    .theme-dark #challenge-overlay {
+      background-color: #222;
+    }
+
+    .theme-dark #challenge-overlay,
+    .theme-dark #challenge-error-text {
+      color: #ffa299;
+    }
+
+    .theme-dark #challenge-overlay a,
+    .theme-dark #challenge-error-text a {
+      color: #bbb;
+    }
+
+    .theme-dark #challenge-overlay a:visited,
+    .theme-dark #challenge-overlay a:link,
+    .theme-dark #challenge-error-text a:visited,
+    .theme-dark #challenge-error-text a:link {
+      color: #bbb;
+    }
+
+    .theme-dark #challenge-overlay a:hover,
+    .theme-dark #challenge-overlay a:active,
+    .theme-dark #challenge-overlay a:focus,
+    .theme-dark #challenge-error-text a:hover,
+    .theme-dark #challenge-error-text a:active,
+    .theme-dark #challenge-error-text a:focus {
+      color: #949494;
+    }
+
+    .theme-dark .ctp-checkbox-label .mark {
+      border: 2px solid #dadada;
+      background-color: #222;
+    }
+
+    .theme-dark .ctp-checkbox-label input:focus~.mark,
+    .theme-dark .ctp-checkbox-label input:active~.mark {
+      border: 2px solid #fbad41;
+    }
+
+    .theme-dark .ctp-checkbox-label input:checked~.mark {
+      background-color: #6d6d6d;
+    }
+
+    .theme-dark .ctp-checkbox-label input:checked~.mark::after {
+      border-color: #fbad41;
+    }
+
+    .theme-dark .offlabel #fail-icon {
+      box-shadow: inset 0 0 0 #fff;
+      animation: fillfail-offlabel-dark 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+    }
+
+    .theme-dark h1 {
+      color: #fff;
+    }
+
+    .theme-dark #challenge-error-title {
+      color: #ffa299;
+    }
+
+    .theme-dark #challenge-error-title a {
+      color: #bbb;
+    }
+
+    .theme-dark #challenge-error-title a:visited,
+    .theme-dark #challenge-error-title a:link {
+      color: #bbb;
+    }
+
+    .theme-dark #challenge-error-title a:hover,
+    .theme-dark #challenge-error-title a:active,
+    .theme-dark #challenge-error-title a:focus {
+      color: #949494;
+    }
+
+    .theme-dark #terms {
+      color: #bbb;
+    }
+
+    .theme-dark #terms a {
+      color: #bbb;
+    }
+
+    .theme-dark #terms a:visited,
+    .theme-dark #terms a:link {
+      color: #bbb;
+    }
+
+    .theme-dark #terms a:hover,
+    .theme-dark #terms a:active,
+    .theme-dark #terms a:focus {
+      color: #949494;
+    }
+
+    .theme-dark #content {
+      border-color: #666;
+      background-color: #222;
+    }
+
+    .theme-dark #qr {
+      fill: rgb(243, 128, 32);
+    }
+
+    .theme-dark .logo-text {
+      fill: #fff;
+    }
+
+    .theme-dark #fr-helper-link,
+    .theme-dark #fr-helper-loop-link {
+      color: #bbb;
+    }
+
+    .theme-dark #fr-helper-link:visited,
+    .theme-dark #fr-helper-link:link,
+    .theme-dark #fr-helper-loop-link:visited,
+    .theme-dark #fr-helper-loop-link:link {
+      color: #bbb;
+    }
+
+    .theme-dark #fr-helper-link:active,
+    .theme-dark #fr-helper-link:hover,
+    .theme-dark #fr-helper-link:focus,
+    .theme-dark #fr-helper-loop-link:active,
+    .theme-dark #fr-helper-loop-link:hover,
+    .theme-dark #fr-helper-loop-link:focus {
+      color: #949494;
+    }
+
+    .theme-dark #expired-refresh-link {
+      color: #bbb;
+    }
+
+    .theme-dark #expired-refresh-link:visited,
+    .theme-dark #expired-refresh-link:link {
+      color: #bbb;
+    }
+
+    .theme-dark #expired-refresh-link:active,
+    .theme-dark #expired-refresh-link:hover,
+    .theme-dark #expired-refresh-link:focus {
+      color: #949494;
+    }
+
+    .theme-dark .overlay {
+      border-color: #ffa299;
+      color: #ffa299;
+    }
+
+    #challenge-error {
+      margin: 0 8px;
+    }
+
+    #challenge-overlay {
+      position: absolute;
+      top: 0;
+      z-index: 9999;
+      background-color: #fafafa;
+    }
+
+    #challenge-overlay,
+    #challenge-error-text {
+      text-align: center;
+      line-height: 10px;
+      color: #de1303;
+      font-size: 9px;
+    }
+
+    #challenge-overlay a,
+    #challenge-error-text a {
+      color: #1d1f20;
+    }
+
+    #challenge-overlay a:visited,
+    #challenge-overlay a:link,
+    #challenge-error-text a:visited,
+    #challenge-error-text a:link {
+      color: #1d1f20;
+    }
+
+    #challenge-overlay a:active,
+    #challenge-overlay a:hover,
+    #challenge-overlay a:focus,
+    #challenge-error-text a:active,
+    #challenge-error-text a:hover,
+    #challenge-error-text a:focus {
+      color: #166379;
+    }
+
+    #logo {
+      margin-bottom: 1px;
+      height: 26px;
+    }
+
+    .failure-circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: #c44d0e;
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .failure-cross {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    .ctp-checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-left: 11px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .ctp-checkbox-label {
+      cursor: pointer;
+      padding-left: 37px;
+    }
+
+    .ctp-checkbox-label input {
+      position: absolute;
+      top: 20px;
+      left: 18px;
+      opacity: 0;
+      z-index: 9999;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+    }
+
+    .ctp-checkbox-label input:active~.mark {
+      border: 2px solid #c44d0e;
+    }
+
+    .ctp-checkbox-label input:active~span.ctp-label {
+      text-decoration: underline;
+    }
+
+    .ctp-checkbox-label input:focus~.mark {
+      border: 2px solid #c44d0e;
+    }
+
+    .ctp-checkbox-label input:focus~span.ctp-label {
+      text-decoration: underline;
+    }
+
+    .ctp-checkbox-label input:checked~.mark {
+      transform: rotate(0deg) scale(1);
+      opacity: 1;
+      border-radius: 5px;
+      background-color: white;
+    }
+
+    .ctp-checkbox-label input:checked~.mark::after {
+      top: 3px;
+      left: 8px;
+      transform: rotate(45deg) scale(1);
+      border: solid #c44d0e;
+      border-width: 0 4px 4px 0;
+      border-radius: 0;
+      width: 6px;
+      height: 12px;
+    }
+
+    .ctp-checkbox-label .mark {
+      position: absolute;
+      top: 20px;
+      left: 18px;
+      transition: all 0.1s ease-in;
+      z-index: 9998;
+      border: 2px solid #6d6d6d;
+      border-radius: 3px;
+      background: #fff;
+      width: 24px;
+      height: 24px;
+      animation: scale-up-center 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53) both;
+    }
+
+    .ctp-checkbox-label .mark::after {
+      position: absolute;
+      border-radius: 5px;
+      content: "";
+    }
+
+    .size-compact {
+      font-size: 13px;
+    }
+
+    .size-compact .ctp-checkbox-label .mark {
+      left: 15px;
+    }
+
+    .size-compact .ctp-checkbox-label input {
+      left: 15px;
+    }
+
+    .size-compact #content {
+      display: flex;
+      flex-flow: column nowrap;
+      place-content: center center;
+      align-items: center;
+      height: 118px;
+    }
+
+    .size-compact .link-spacer {
+      margin-right: 3px;
+      margin-left: 3px;
+    }
+
+    .size-compact .ctp-checkbox-container {
+      text-align: left;
+    }
+
+    .size-compact #logo {
+      margin-top: 5px;
+      margin-bottom: 0;
+      height: 22px;
+    }
+
+    .size-compact .cb-container {
+      margin-top: 3px;
+      margin-left: 0;
+    }
+
+    .size-compact #branding {
+      display: flex;
+      flex-flow: row-reverse wrap;
+      place-content: center flex-start;
+      align-items: center;
+      margin: 5px 16px 0;
+      padding-right: 0;
+      text-align: right;
+    }
+
+    .size-compact #terms {
+      text-align: right;
+    }
+
+    .size-compact #qr {
+      text-align: center;
+    }
+
+    .size-compact #challenge-error-title {
+      margin-top: 3px;
+      width: auto;
+    }
+
+    .size-compact #fail {
+      display: flex;
+      flex-flow: row nowrap;
+      place-content: center space-evenly;
+      align-items: center;
+      visibility: visible;
+      line-height: 13px;
+      font-size: 11px;
+    }
+
+    .size-compact #fail-icon {
+      margin-right: 4px;
+      width: 25px;
+      height: 25px;
+    }
+
+    .size-compact #expired {
+      margin-top: 9px;
+      margin-left: 11px;
+    }
+
+    .size-compact #challenge-error {
+      margin: 0 2px;
+    }
+
+    .ctp-label {
+      display: flex;
+      flex-flow: row-reverse nowrap;
+      place-content: center flex-end;
+      align-items: center;
+      padding-left: 2px;
+    }
+
+    .rtl .ctp-label {
+      padding-right: 2px;
+      padding-left: 0;
+    }
+
+    .rtl #success-icon {
+      left: 255px;
+      margin-left: 8px;
+    }
+
+    .rtl #fail-icon {
+      left: 255px;
+      margin-left: 8px;
+    }
+
+    .rtl #spinner-icon {
+      left: 255px;
+      margin-left: 8px;
+    }
+
+    .rtl #expired-icon {
+      left: 255px;
+      margin-left: 8px;
+    }
+
+    .rtl #branding {
+      margin: 0 0 0 16px;
+      padding-right: 0;
+      padding-left: 0;
+      width: 90px;
+      text-align: center;
+    }
+
+    .rtl .size-compact #branding {
+      padding-right: 0;
+      padding-left: 0;
+      text-align: center;
+    }
+
+    .rtl .size-compact #terms {
+      text-align: center;
+    }
+
+    .rtl .size-compact #cf-stage {
+      padding-right: 48px;
+    }
+
+    .rtl .size-compact #success-icon {
+      left: 86px;
+    }
+
+    .rtl .size-compact #fail-icon {
+      left: 86px;
+    }
+
+    .rtl .size-compact #spinner-icon {
+      left: 86px;
+    }
+
+    .rtl .size-compact #expired-icon {
+      left: 86px;
+    }
+
+    .rtl .size-compact #expired {
+      margin-top: 0;
+      margin-left: 0;
+    }
+
+    .rtl .ctp-checkbox-label {
+      padding-right: 37px;
+      padding-left: 0;
+      text-align: right;
+    }
+
+    .rtl .ctp-checkbox-label input {
+      right: 18px;
+    }
+
+    .rtl .ctp-checkbox-label input:checked~.mark::after {
+      right: 8px;
+    }
+
+    .rtl .ctp-checkbox-label .mark {
+      right: 18px;
+    }
+
+    .rtl .ctp-checkbox-container {
+      margin-right: 11px;
+      margin-left: 0;
+      text-align: right;
+    }
+
+    .rtl .cb-container {
+      margin-left: 0;
+    }
+
+    #terms {
+      display: flex;
+      justify-content: space-evenly;
+      line-height: 10px;
+      color: #1d1f20;
+      font-size: 8px;
+      font-style: normal;
+    }
+
+    #terms a {
+      text-decoration: underline;
+      line-height: 10px;
+      color: #1d1f20;
+      font-size: 8px;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    #terms a:link,
+    #terms a:visited {
+      text-decoration: underline;
+      line-height: 10px;
+      color: #1d1f20;
+      font-size: 8px;
+      font-weight: 400;
+      font-style: normal;
+    }
+
+    #terms a:hover,
+    #terms a:focus,
+    #terms a:active {
+      text-decoration: underline;
+      color: #166379;
+    }
+
+    #challenge-error-title {
+      position: absolute;
+      top: 0;
+      margin: 5px 0;
+      width: 200px;
+      height: 55px;
+      color: #de1303;
+      font-size: 11px;
+    }
+
+    #challenge-error-title a {
+      color: #1d1f20;
+    }
+
+    #challenge-error-title a:hover,
+    #challenge-error-title a:focus,
+    #challenge-error-title a:active {
+      text-decoration: underline;
+      color: #166379;
+    }
+
+    #challenge-error-title a:link,
+    #challenge-error-title a:visited {
+      color: #1d1f20;
+    }
+
+    #challenge-error-title .icon-wrapper {
+      display: none;
+    }
+
+    .unspun .circle {
+      animation: unspin 0.7s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .circle {
+      stroke-width: 3px;
+      stroke-linecap: round;
+      stroke: #038127;
+      stroke-dasharray: 0, 100, 0;
+      stroke-dashoffset: 200;
+      stroke-miterlimit: 1;
+      stroke-linejoin: round;
+    }
+
+    .main-wrapper {
+      border-spacing: 0;
+    }
+
+    .p1 {
+      fill: none;
+      stroke: #fff;
+    }
+
+    .expired-p1 {
+      fill: none;
+      stroke: #fff;
+    }
+
+    .offlabel .circle {
+      stroke: #1d1f20;
+    }
+
+    .offlabel .success-circle {
+      stroke: #1d1f20;
+      fill: #1d1f20;
+    }
+
+    .offlabel .failure-circle {
+      stroke: #1d1f20;
+    }
+
+    .offlabel #fail-icon {
+      box-shadow: inset 0 0 0 #1d1f20;
+      animation: fillfail-offlabel 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+    }
+
+    .theme-dark.offlabel .circle {
+      stroke: #fff;
+    }
+
+    .theme-dark.offlabel .success-circle {
+      stroke: #fff;
+      fill: #fff;
+    }
+
+    .theme-dark.offlabel .p1 {
+      stroke: #000;
+    }
+
+    .theme-dark.offlabel .expired-p1 {
+      stroke: #000;
+    }
+
+    .theme-dark.offlabel .failure-circle {
+      stroke: #fff;
+    }
+
+    .theme-dark.offlabel .expired-circle {
+      fill: #fff;
+      stroke: #fff;
+    }
+
+    .expired-circle {
+      stroke-width: 3px;
+      stroke-linecap: round;
+      stroke: #6d6d6d;
+      fill: #6d6d6d;
+      stroke-linejoin: round;
+    }
+
+    #expired-icon {
+      display: flex;
+      margin-right: 8px;
+      box-shadow: inset 0 0 0 #6d6d6d;
+      width: 30px;
+      height: 30px;
+      animation: scale 0.3s ease-in-out 0.9s both;
+      stroke-width: 6px;
+      stroke: #f8f8f8;
+      stroke-miterlimit: 10;
+    }
+
+    .cb-container {
+      display: flex;
+      align-items: center;
+      margin-left: 11px;
+    }
+
+    .logo-text {
+      fill: #000;
+    }
+
+    #qr {
+      fill: #1d1f20;
+    }
+
+    #qr svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    body.theme-dark {
+      background-color: #222;
+      color: #fff;
+    }
+
+    #fr-helper-link,
+    #fr-helper-loop-link {
+      display: block;
+      color: #1d1f20;
+    }
+
+    #fr-helper-link:link,
+    #fr-helper-link:visited,
+    #fr-helper-loop-link:link,
+    #fr-helper-loop-link:visited {
+      display: block;
+      color: #1d1f20;
+    }
+
+    #fr-helper-link:active,
+    #fr-helper-link:hover,
+    #fr-helper-link:focus,
+    #fr-helper-loop-link:active,
+    #fr-helper-loop-link:hover,
+    #fr-helper-loop-link:focus {
+      color: #166379;
+    }
+
+    #expired-refresh-link {
+      display: block;
+      color: #1d1f20;
+    }
+
+    #expired-refresh-link:link,
+    #expired-refresh-link:visited {
+      display: block;
+      color: #1d1f20;
+    }
+
+    #expired-refresh-link:active,
+    #expired-refresh-link:hover,
+    #expired-refresh-link:focus {
+      color: #166379;
+    }
+
+    html.rtl {
+      direction: rtl;
+    }
+
+    .lang-de #branding {
+      display: flex;
+      flex-direction: column;
+      margin: 0 16px 0 0;
+      padding-top: 5px;
+      text-align: right;
+    }
+
+    .lang-de .size-compact #branding {
+      display: flex;
+      flex-flow: column nowrap;
+      place-content: flex-end flex-start;
+      align-items: flex-end;
+      margin: 0;
+      margin-top: 6px;
+      margin-left: 16px;
+      text-align: right;
+    }
+
+    .lang-de .size-compact .ctp-label {
+      font-size: 10px;
+    }
+
+    .lang-de .size-compact #challenge-overlay,
+    .lang-de .size-compact #challenge-error-text {
+      line-height: 10px;
+      font-size: 9px;
+    }
+
+    .lang-de #terms {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-end;
+      line-height: 10px;
+      font-style: normal;
+    }
+
+    .lang-de #terms .link-spacer {
+      display: none;
+    }
+
+    .lang-de #challenge-error {
+      margin: 8px 4px;
+    }
+
+    .lang-ja #branding {
+      display: flex;
+      flex-direction: column;
+      margin: 0 16px 0 0;
+      padding-top: 5px;
+      text-align: right;
+    }
+
+    .lang-ja #terms {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-end;
+      line-height: 10px;
+      font-style: normal;
+    }
+
+    .lang-ja #terms .link-spacer {
+      display: none;
+    }
+
+    .lang-ja .ctp-label {
+      font-size: 11px;
+    }
+
+    .lang-ja .size-compact #challenge-overlay,
+    .lang-ja .size-compact #challenge-error-text {
+      line-height: 10px;
+    }
+
+    .lang-ru #branding {
+      display: flex;
+      flex-direction: column;
+      margin: 0 16px 0 0;
+      padding-top: 5px;
+      text-align: right;
+    }
+
+    .lang-ru .size-compact #branding {
+      display: flex;
+      flex-flow: column nowrap;
+      place-content: flex-end flex-start;
+      align-items: flex-end;
+      margin: 0;
+      margin-top: 6px;
+      margin-left: 16px;
+      text-align: right;
+    }
+
+    .lang-ru .size-compact #verifying-text {
+      font-size: 10px;
+    }
+
+    .lang-ru .size-compact .ctp-label {
+      margin-left: 6px;
+      font-size: 10px;
+    }
+
+    .lang-ru .size-compact .ctp-checkbox-label .mark {
+      left: 11px;
+    }
+
+    .lang-ru .size-compact .ctp-checkbox-label input {
+      left: 11px;
+    }
+
+    .lang-ru .size-compact #challenge-overlay,
+    .lang-ru .size-compact #challenge-error-text {
+      line-height: 10px;
+      font-size: 8px;
+    }
+
+    .lang-ru #terms {
+      display: flex;
+      flex-flow: column nowrap;
+      justify-content: flex-end;
+      line-height: 10px;
+      font-style: normal;
+    }
+
+    .lang-ru #terms .link-spacer {
+      display: none;
+    }
+
+    .lang-ru #challenge-error {
+      margin: 8px 4px;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      opacity: 0.9;
+      z-index: 2147483647;
+      border: 1px solid #de1303;
+      background-color: white;
+      padding: 2px;
+      height: auto;
+      line-height: 8px;
+      color: #de1303;
+      font-family: consolas, "Liberation Mono", courier, monospace;
+      font-size: 8px;
+    }
+
+    .lang-it .size-compact #challenge-overlay,
+    .lang-it .size-compact #challenge-error-text {
+      line-height: 10px;
+      font-size: 9px;
+    }
+
+    .lang-id .size-compact #challenge-overlay,
+    .lang-id .size-compact #challenge-error-text {
+      line-height: 10px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body.theme-auto {
+        background-color: #222;
+        color: #fff;
+      }
+
+      .theme-auto h1 {
+        color: #fff;
+      }
+
+      .theme-auto #challenge-error-title {
+        color: #ffa299;
+      }
+
+      .theme-auto #challenge-error-title a {
+        color: #bbb;
+      }
+
+      .theme-auto #challenge-error-title a:visited,
+      .theme-auto #challenge-error-title a:link {
+        color: #bbb;
+      }
+
+      .theme-auto #challenge-error-title a:hover,
+      .theme-auto #challenge-error-title a:focus,
+      .theme-auto #challenge-error-title a:active {
+        color: #949494;
+      }
+
+      .theme-auto #challenge-overlay {
+        background-color: #222;
+      }
+
+      .theme-auto #challenge-overlay,
+      .theme-auto #challenge-error-text {
+        color: #ffa299;
+      }
+
+      .theme-auto #challenge-overlay a,
+      .theme-auto #challenge-error-text a {
+        color: #bbb;
+      }
+
+      .theme-auto #challenge-overlay a:visited,
+      .theme-auto #challenge-overlay a:link,
+      .theme-auto #challenge-error-text a:visited,
+      .theme-auto #challenge-error-text a:link {
+        color: #bbb;
+      }
+
+      .theme-auto #challenge-overlay a:hover,
+      .theme-auto #challenge-overlay a:focus,
+      .theme-auto #challenge-overlay a:active,
+      .theme-auto #challenge-error-text a:hover,
+      .theme-auto #challenge-error-text a:focus,
+      .theme-auto #challenge-error-text a:active {
+        color: #949494;
+      }
+
+      .theme-auto #terms {
+        color: #bbb;
+      }
+
+      .theme-auto #terms a {
+        color: #bbb;
+      }
+
+      .theme-auto #terms a:visited,
+      .theme-auto #terms a:link {
+        color: #bbb;
+      }
+
+      .theme-auto #terms a:hover,
+      .theme-auto #terms a:focus,
+      .theme-auto #terms a:active {
+        color: #949494;
+      }
+
+      .theme-auto #temrs a:active {
+        color: #949494;
+      }
+
+      .theme-auto #content {
+        border-color: #666;
+        background-color: #222;
+      }
+
+      .theme-auto #qr {
+        fill: rgb(243, 128, 32);
+      }
+
+      .theme-auto .logo-text {
+        fill: #fff;
+      }
+
+      .theme-auto .ctp-checkbox-label input:checked~.mark {
+        background-color: #6d6d6d;
+      }
+
+      .theme-auto .ctp-checkbox-label input:checked~.mark::after {
+        border-color: #fbad41;
+      }
+
+      .theme-auto .ctp-checkbox-label input:active~.mark {
+        border: 2px solid #fbad41;
+      }
+
+      .theme-auto .ctp-checkbox-label input:focus~.mark {
+        border: 2px solid #fbad41;
+      }
+
+      .theme-auto .ctp-checkbox-label .mark {
+        border: 2px solid #dadada;
+        background-color: #222;
+      }
+
+      .theme-auto #success-icon {
+        box-shadow: inset 0 0 0 #0aa937;
+      }
+
+      .theme-auto #success-icon .p1 {
+        box-shadow: inset 0 0 0 #0aa937;
+      }
+
+      .theme-auto .success-circle {
+        stroke: #0aa937;
+        fill: #0aa937;
+      }
+
+      .theme-auto #fr-helper-link,
+      .theme-auto #fr-helper-loop-link {
+        color: #bbb;
+      }
+
+      .theme-auto #fr-helper-link:visited,
+      .theme-auto #fr-helper-link:link,
+      .theme-auto #fr-helper-loop-link:visited,
+      .theme-auto #fr-helper-loop-link:link {
+        color: #bbb;
+      }
+
+      .theme-auto #fr-helper-link:hover,
+      .theme-auto #fr-helper-link:focus,
+      .theme-auto #fr-helper-link:active,
+      .theme-auto #fr-helper-loop-link:hover,
+      .theme-auto #fr-helper-loop-link:focus,
+      .theme-auto #fr-helper-loop-link:active {
+        color: #949494;
+      }
+
+      .theme-auto #expired-refresh-link {
+        color: #bbb;
+      }
+
+      .theme-auto #expired-refresh-link:visited,
+      .theme-auto #expired-refresh-link:link {
+        color: #bbb;
+      }
+
+      .theme-auto #expired-refresh-link:hover,
+      .theme-auto #expired-refresh-link:focus,
+      .theme-auto #expired-refresh-link:active {
+        color: #949494;
+      }
+
+      .theme-auto .overlay {
+        border-color: #ffa299;
+        color: #ffa299;
+      }
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+    crossorigin="anonymous"></script>
+</head>
+
+<body class="theme-dark size-normal">
+  <div class="main-wrapper" class=".rlSLoT0">
+    <div id="content" style="display:none" aria-live="polite" aria-atomic="true">
+      <div id="challenge-stage" style="display:none;">
+        <div style="display: flex;" class="ctp-checkbox-container" role="alert"><label class="ctp-checkbox-label"><input
+              type="checkbox"><span class="mark"></span><span class="ctp-label">Verify you are human</span></label>
+        </div>
+      </div>
+      <div id="verifying" class="cb-container" style="display:none">
+        <svg id="spinner-icon" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line x1="15" x2="15" y1="1.5" y2="5.5" class="circle"></line>
+          <line x1="24.5459" x2="24.5459" y1="5.45405" y2="10.45405" transform="rotate(45 24.5459 5.45405)"
+            class="circle"></line>
+          <line x1="28.5" x2="28.5" y1="15" y2="20" transform="rotate(90 28.5 15)" class="circle"></line>
+          <line x1="24.5459" x2="24.5459" y1="24.546" y2="29.546" transform="rotate(135 24.5459 24.546)" class="circle">
+          </line>
+          <line x1="15" x2="15" y1="28.5" y2="33.5" transform="rotate(180 15 28.5)" class="circle"></line>
+          <line x1="5.4541" x2="5.4541" y1="24.5459" y2="29.5459" transform="rotate(-135 5.4541 24.5459)"
+            class="circle"></line>
+          <line x1="1.5" x2="1.5" y1="15" y2="20" transform="rotate(-90 1.5 15)" class="circle"></line>
+          <line x1="5.45408" x2="5.45408" y1="5.45404" y2="10.45404" transform="rotate(-45 5.45408 5.45404)"
+            class="circle"></line>
+        </svg>
+        <div id="verifying-msg">
+          <span id="verifying-text">Verifying&hellip;</span>
+        </div>
+      </div>
+      <div id="success" class="cb-container" style="display:none" role="alert">
+        <svg id="success-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="success-circle" cx="26" cy="26" r="25" />
+          <path class="p1" d="m13,26l9.37,9l17.63,-18" />
+        </svg>
+        <span id="success-text">Success!</span>
+      </div>
+      <div id="fail" class="cb-container" style="display:none" role="alert">
+        <svg id="fail-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="failure-circle" cx="26" cy="26" r="25" fill="none" />
+          <path class="failure-cross" fill="none" d="M14.1 27.2 l24.124.2" />
+        </svg>
+        <div id="failure-msg">
+          <span id="fail-text">Failure!</span>
+          <br />
+          <span id="fr-helper">
+            <a href="#refresh" id="fr-helper-link">Having trouble?</a>
+          </span>
+        </div>
+      </div>
+      <div id="expired" class="cb-container" style="display:none" role="alert">
+        <svg id="expired-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52" aria-hidden="true">
+          <circle class="expired-circle" cx="26" cy="26" r="25" />
+          <path class="expired-p1" d="m13,32l15,0l0,-23"></path>
+        </svg>
+        <div id="expiry-msg">
+          <span id="expired-text">Expired.</span>
+        </div>
+      </div>
+      <div id="challenge-error" class="cb-container" style="display:none" role="alert">
+        <span id="challenge-error-text"></span>
+      </div>
+    </div>
+  </div>
+  <script>
+    $('input:checkbox').change(
+      function () {
+        if ($(this).is(':checked')) {
+          hasboxticked = true;
+          setTimeout(() => {
+            $("#verifying").css("display", "");
+            $("#challenge-stage").css("display", "none");
+            verify();
+          }, 250);
+        }
+      });
+    function verify() {
+      $('input:checkbox').prop('checked', false)
+      $("#content, #verifying").css("display", "");
+      $("#challenge-stage").css("display", "none");
+
+      setTimeout(() => {
+        let hasboxticked = false;
+        $("#verifying").css("display", "none");
+        $("#challenge-stage").css("display", "");
+      }, 5000);
+    }
+    verify()
+  </script>
+</body>
+
+</html>

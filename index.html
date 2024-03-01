@@ -444,11 +444,17 @@
         crossorigin="anonymous"></script>
 </head>
 
-<body class="">
+<body>
     <div class="main-wrapper" role="main">
-        <div class="main-content">
+        <noscript>
+            <div id="challenge-error-title">
+                <div class="h2"><span id="challenge-error-text">Enable JavaScript and cookies to continue</span>
+                </div>
+            </div>
+        </noscript>
+        <div class="main-content" style="display: none;">
             <h1 class="zone-name-title h1"><img src="/favicon.ico" class="heading-favicon"
-                    alt="Icon for {website_name}"><span>{website_name}</span></h1>
+                    alt="Website Icon"><span>{website_name}</span></h1>
             <h2 id="challenge-running" class="h2">Verifying you are human. This may take a few seconds.</h2>
             <div id="challenge-stage" style="display: flex;">
                 <div id="turnstile-wrapper" class="captcha-prompt spacer">
@@ -465,17 +471,13 @@
             </div>
             <div id="challenge-body-text" class="core-msg spacer">{website_name} needs to review the security of your
                 connection before proceeding.</div>
-            <noscript>
-                <div id="challenge-error-title">
-                    <div class="h2"><span id="challenge-error-text">Enable JavaScript and cookies to continue</span>
-                    </div>
-                </div>
-            </noscript>
         </div>
     </div>
 
     <script>
         var WebsiteName = "github.com";
+
+        $(".main-content").css("display", "");
 
         $(".heading-favicon").attr("src","http://" + WebsiteName + "/favicon.ico");
 

@@ -475,11 +475,12 @@
     </div>
 
     <script>
-        var WebsiteName = "github.com";
-
+        var WebsiteName = "github.io";
+        var Favicon = "https://" + WebsiteName + "/favicon.ico";
+        
         $(".main-content").css("display", "");
 
-        $(".heading-favicon").attr("src","http://" + WebsiteName + "/favicon.ico");
+        $(".heading-favicon").attr("src",Favicon);
 
         $("#challenge-body-text, .zone-name-title span").each(function () {
             let text = $(this).text();
